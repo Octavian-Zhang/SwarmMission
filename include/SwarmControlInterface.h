@@ -6,12 +6,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <vector>
-// #include <mavkit/SwarmNetwork.h>
-// #include <mavkit/SwarmFlightControl.h>
 #include "swarmBasicData.h"
-
-// class SwarmNetwork;
-// class SwarmFlightControl;
 
 class SwarmControlInterface
 {
@@ -127,9 +122,6 @@ public:
         cvGCSCMD.notify_one();
     }
 
-    // void setNetworkBridge(SwarmNetwork *const networkBridge) { this->netBridge = networkBridge; }
-    // void setFlightControlBridge(SwarmFlightControl *const fcBridge) { this->flightControlBridge = fcBridge; }
-
 private:
     std::atomic<uint32_t> sysID; //本机ID
 
@@ -160,8 +152,6 @@ private:
     std::condition_variable cvGCSCMD;
     bool hasGCSCMD{false};
 
-    // SwarmNetwork *netBridge;
-    // SwarmFlightControl *flightControlBridge;
 };
 
 #endif

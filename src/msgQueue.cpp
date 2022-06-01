@@ -16,7 +16,7 @@ msgQueue::msgQueue(const char *name, int flags, int maxmsg, int msgsize) : qName
     {
         printf("%s mq_open failed\n", qName_);
         int err = errno;
-        printf("%i", err); exit(1);
+        printf("errno = %i\n", err); exit(1);
     }
 }
 
@@ -26,12 +26,12 @@ msgQueue::~msgQueue()
     {
         printf("%s mq_close failed\n", qName_);
         int err = errno;
-        printf("%i", err); exit(1);
+        printf("errno = %i\n", err); exit(1);
     }
     if (mq_unlink(qName_) < 0)
     {
         printf("%s mq_unlink failed\n", qName_);
         int err = errno;
-        printf("%i", err); exit(1);
+        printf("errno = %i\n", err); exit(1);
     }
 }
