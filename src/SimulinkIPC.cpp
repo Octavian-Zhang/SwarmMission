@@ -8,6 +8,7 @@ SimulinkIPC::SimulinkIPC()
     , ptrPosixMQ_ExtY{new msgQueue("/PosixMQ_ExtY", O_CREAT | O_RDONLY, 1, sizeof(ExtY_codegenReal2Mission_T))}
     , ptrPosixMQ_SndCMD{new msgQueue("/PosixMQ_SndCMD", O_CREAT | O_RDONLY, 1, sizeof(IndividualUAVCmd))}
     , ptrPosixMQ_RcvCMD{new msgQueue("/PosixMQ_RcvCMD", O_CREAT | O_WRONLY, 1, sizeof(IndividualUAVCmd))}
+    , ptrPosixMQ_NbrState{new msgQueue("/ptrPosixMQ_NbrState", O_CREAT | O_WRONLY, 1, sizeof(RealUAVStateBus))}
 {
 }
 
@@ -21,6 +22,7 @@ void SimulinkIPC::runThreads()
     ptrThreadPool.push_back(new std::thread(&SimulinkIPC::sndMissionCmd, this));
     ptrThreadPool.push_back(new std::thread(&SimulinkIPC::rcvMissionCmdFB, this));
     ptrThreadPool.push_back(new std::thread(&SimulinkIPC::rlseAlgStart, this));
+    ptrThreadPool.push_back(new std::thread(&SimulinkIPC::sndNbrUAVState, this));
 }
 
 void SimulinkIPC::rcvSimulinkOutput()
@@ -34,7 +36,7 @@ void SimulinkIPC::rcvSimulinkOutput()
             std::cout << "Received ExtY"
                       << std::endl;
             // Parse Simulink Output here
-            swarmInter->setFCUCMD(ExtY.FCUCMD_i);
+            swarmInter->setFlightCMD(ExtY.FlightCMD);
             swarmInter->setTaskStatus(ExtY.MissionFB);
         }
     }
@@ -44,14 +46,11 @@ void SimulinkIPC::sndSimulinkInput()
 {
     ExtU_codegenReal2Mission_T ExtU{}; // forward declaration
     size_t msg_len = sizeof(ExtU);
-    std::array<RealUAVStateBus, 128> NeighbourStates;
     while (true)
     {
         // Parse Simulink Input here
         ExtU.FlightMode = swarmInter->getFlightMode();
-        ExtU.StateFCU_b = swarmInter->getStateFCU();
-        swarmInter->getOtherUAVstate(NeighbourStates);
-        std::move(NeighbourStates.begin(), NeighbourStates.end(), std::begin(ExtU.OtherUAVstate));
+        ExtU.FlightState = swarmInter->getStateFCU();
         if (!(mq_send(ptrPosixMQ_ExtU->getMQ(), (char *)&ExtU, msg_len, priority["IO"]) < 0))
         {
             std::cout << "Sent ExtU"

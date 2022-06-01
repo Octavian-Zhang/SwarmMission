@@ -35,21 +35,21 @@ public:
     }
 
     // FCUCMD, 0x92
-    const FCUCMD &getFCUCMD()                                       // Call by DataReactor, block till new data available
+    const FCUCMD &getFlightCMD()                                       // Call by DataReactor, block till new data available
     {
-        std::unique_lock<std::mutex> lk(mutexFCUCMD);
-        cvFCUCMD.wait(lk, [&]()
-                      { return this->hasFCUCMD; });
-        hasFCUCMD = false;
-        return this->FCUCMD_i;
+        std::unique_lock<std::mutex> lk(mutexFlightCMD);
+        cvFlightCMD.wait(lk, [&]()
+                      { return this->hasFlightCMD; });
+        hasFlightCMD = false;
+        return this->FlightCMD;
     }
-    void setFCUCMD(const FCUCMD &refFCUCMD)                         // Call by Algorithm
+    void setFlightCMD(const FCUCMD &refFlightCMD)                         // Call by Algorithm
     {
-        std::unique_lock<std::mutex> lk(mutexFCUCMD);
-        this->FCUCMD_i = refFCUCMD;
-        hasFCUCMD = true;
+        std::unique_lock<std::mutex> lk(mutexFlightCMD);
+        this->FlightCMD = refFlightCMD;
+        hasFlightCMD = true;
         lk.unlock();
-        cvFCUCMD.notify_one();
+        cvFlightCMD.notify_one();
     }
 
     // FlightMode
@@ -65,13 +65,13 @@ public:
     // StateFCU
     const StateFCU &getStateFCU()                                   // Call by Algorithm
     {
-        const std::lock_guard<std::mutex> lock(mutexStateFCU);
-        return this->StateFCU_i;
+        const std::lock_guard<std::mutex> lock(mutexFlightState);
+        return this->FlightState;
     }
     void setStateFCU(const StateFCU &refStateFCU)                   // Call by DataReactor
     {
-        const std::lock_guard<std::mutex> lock(mutexStateFCU);
-        this->StateFCU_i = refStateFCU;
+        const std::lock_guard<std::mutex> lock(mutexFlightState);
+        this->FlightState = refStateFCU;
     }
 
     // TaskStatus, 0xC2
@@ -81,12 +81,12 @@ public:
         cvTaskStatus.wait(lk, [&]()
                           { return this->hasTaskStatus; });
         hasTaskStatus = false;
-        return this->TaskStatus_i;
+        return this->MissionStatusFB;
     }
     void setTaskStatus(const TaskStatus &refTaskStatus)             // Call by Algorithm
     {
         std::unique_lock<std::mutex> lk(mutexTaskStatus);
-        this->TaskStatus_i = refTaskStatus;
+        this->MissionStatusFB = refTaskStatus;
         hasTaskStatus = true;
         lk.unlock();
         cvTaskStatus.notify_one();
@@ -129,17 +129,17 @@ private:
     std::mutex mutexTimeCalibrated;    // Asynchronous
     std::condition_variable cvTimeCalibrated;
 
-    FCUCMD FCUCMD_i{};      // 0x92, MissionControl -> FlightControl
-    std::mutex mutexFCUCMD; // 10 Herz
-    std::condition_variable cvFCUCMD;
-    bool hasFCUCMD{false};
+    FCUCMD FlightCMD{};      // 0x92, MissionControl -> FlightControl
+    std::mutex mutexFlightCMD; // 10 Herz
+    std::condition_variable cvFlightCMD;
+    bool hasFlightCMD{false};
 
     std::atomic<uint8_T> FlightMode{};   // Pointing Mode -> FlightMode == 3, 10 Herz
 
-    StateFCU StateFCU_i{};    // 0xC2, FlightControl -> MissionControl
-    std::mutex mutexStateFCU; // 10 Herz
+    StateFCU FlightState{};    // 0xC2, FlightControl -> MissionControl
+    std::mutex mutexFlightState; // 10 Herz
 
-    TaskStatus TaskStatus_i{};  // 0xC2, MissionControl -> GroundControl
+    TaskStatus MissionStatusFB{};  // 0xC2, MissionControl -> GroundControl
     std::mutex mutexTaskStatus; // 10 Herz
     std::condition_variable cvTaskStatus;
     bool hasTaskStatus{false};

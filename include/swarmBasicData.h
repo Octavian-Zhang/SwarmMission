@@ -5,10 +5,13 @@
 
 struct RealUAVStateBus
 {
+    int32_T UAV_ID;
     real_T Latitude_deg;
     real_T Longitude_deg;
     real_T Height_meter;
+    real_T Altitude_meter;
     real_T AirSpeed_mps;
+    real_T GndSpd_mps;
     real_T HeadingAngle_deg;
     real_T FlightPathAngle_deg;
     real_T RollAngle_deg;
@@ -23,17 +26,13 @@ struct VectorSpeed
 
 struct StateFCU
 {
-    RealUAVStateBus RealUAVState;   // @key
-    real_T GndSpd_mps;              // @key, Ground Speed
-    real_T Altitude;
+    RealUAVStateBus RealUAVState;
     VectorSpeed VecSpd;
 };
 
-struct ExtU_codegenReal2Mission_T
-{
-    uint8_T FlightMode;                 // '<Root>/FlightMode'
-    RealUAVStateBus OtherUAVstate[128]; // '<Root>/OtherUAVstate'
-    StateFCU StateFCU_b;                // '<Root>/StateFCU'
+struct ExtU_codegenReal2Mission_T {
+    uint8_T FlightMode;            // '<Root>/FlightMode'
+    StateFCU FlightState;          // '<Root>/FlightState'
 };
 
 struct FCUCMD
@@ -41,12 +40,13 @@ struct FCUCMD
     real_T Latitude_deg;
     real_T Longitude_deg;
     real_T Height_meter;
+    real_T RefHdg_deg;
     real_T RefAirSpd_mps;
 };
 
 struct TaskStatus
 {
-    boolean_T EngagedFlag;
+    uint8_T EngagedFlag;
     int32_T FlightStatus;
     int32_T ImmedStatus;
     int32_T SequenceID;
@@ -55,10 +55,9 @@ struct TaskStatus
     int32_T FormationPos;
 };
 
-struct ExtY_codegenReal2Mission_T
-{
-    FCUCMD FCUCMD_i;      // '<Root>/FCUCMD'
-    TaskStatus MissionFB; // '<Root>/MissionFB'
+struct ExtY_codegenReal2Mission_T {
+    FCUCMD FlightCMD;              // '<Root>/FlightCMD'
+    TaskStatus MissionFB;          // '<Root>/MissionFB'
 };
 
 #endif

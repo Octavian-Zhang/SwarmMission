@@ -19,6 +19,7 @@ public:
     void rlseAlgStart();
     void sndMissionCmd();
     void rcvMissionCmdFB();
+    void sndNbrUAVState();
 
     void setSwarmInterface(SwarmControlInterface *swarmInterface)
     {
@@ -33,6 +34,7 @@ private:
     std::shared_ptr<msgQueue> ptrPosixMQ_ExtY;
     std::shared_ptr<msgQueue> ptrPosixMQ_SndCMD;
     std::shared_ptr<msgQueue> ptrPosixMQ_RcvCMD;
+    std::shared_ptr<msgQueue> ptrPosixMQ_NbrState;
 
     SwarmControlInterface *swarmInter;
 

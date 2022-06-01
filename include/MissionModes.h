@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'codegenReal2Mission'.
 //
-// Model version                  : 3.91
-// Simulink Coder version         : 9.6 (R2021b) 14-May-2021
-// C/C++ source code generated on : Wed Feb 23 00:38:39 2022
+// Model version                  : 4.219
+// Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
+// C/C++ source code generated on : Thu Jun  2 02:00:58 2022
 //
 
 #ifndef RTW_HEADER_MissionModes_h_
@@ -13,23 +13,28 @@
 #include "rtwtypes.h"
 
 // Enumeration class that captures all mission modes
-typedef int32_T MissionModes;
+enum class MissionModes
+    : int32_T {
+    CircNav = 1,
+    HorzScanNav = 2,
+    RunWayNav = 3,
+    DetailedInsp = 128,
+    AvoidDanger = 129,
+    FlightMissionRH = 130,
+    SqCalibr = 132,
+    pAttack = 133,
+    CircDispNav = 11,
+    CustomFrmnNav = 22,
+    FrmnRunWay = 33,
+    ProtLine = 44,
+    FrmnWayPoint = 55,
+    WaitToStart = 255,
+    None = 0,                          // Default value
+    TuneADRC = 252,
+    ShiftEarthENU = 254,
+    ShiftBodyXYZ = 253
+};
 
-// enum MissionModes
-#define MissionModes_CircNav           (1)
-#define MissionModes_CircDispNav       (11)
-#define MissionModes_HorzFrmnNav       (2)
-#define MissionModes_CustomFrmnNav     (22)
-#define MissionModes_RunWayNav         (3)
-#define MissionModes_ProtLine          (4)
-#define MissionModes_NewRunWay         (5)
-#define MissionModes_DetailedInsp      (128)
-#define MissionModes_CollAvoidance     (129)
-#define MissionModes_FlightMissionRH   (130)
-#define MissionModes_SqCalibr          (131)
-#define MissionModes_pAttack           (132)
-#define MissionModes_WaitToStart       (255)
-#define MissionModes_None              (0)                       // Default value
 #endif                                 // RTW_HEADER_MissionModes_h_
 
 //
