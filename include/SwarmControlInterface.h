@@ -16,9 +16,6 @@ public:
 
     bool StartMission{false};
 
-    const uint32_t getSysID() { return this->sysID; }               // Call by Algorithm
-    void setSysID(const uint32_t &sysID) { this->sysID = sysID; }   // Call by DataReactor
-
     // TimeCalibrated
     void calibrateTime()                                            // Call by DataReactor
     {
@@ -123,7 +120,6 @@ public:
     }
 
 private:
-    std::atomic<uint32_t> sysID; //本机ID
 
     bool TimeCalibrated{false};
     std::mutex mutexTimeCalibrated;    // Asynchronous
