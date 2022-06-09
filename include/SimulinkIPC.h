@@ -27,7 +27,7 @@ public:
     }
 
 private:
-    std::map<std::string, unsigned int> priority{{"IO", 8192}, {"Snd", 16384}, {"Rcv", 1}};
+    std::map<std::string, unsigned int> priority{{"IO", 8192}, {"Snd", 16384}, {"Rcv", 0}};
 
     std::shared_ptr<msgQueue> ptrPosixMQ_Start;
     std::shared_ptr<msgQueue> ptrPosixMQ_ExtU;
