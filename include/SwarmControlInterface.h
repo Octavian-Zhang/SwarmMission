@@ -7,6 +7,9 @@
 #include <condition_variable>
 #include <vector>
 #include "swarmBasicData.h"
+#include "SimulinkIPC.h"
+
+class SimulinkIPC;
 
 class SwarmControlInterface
 {
@@ -89,18 +92,6 @@ public:
         cvTaskStatus.notify_one();
     }
 
-    // OtherUAVstate
-    void getOtherUAVstate(std::array<RealUAVStateBus, 128> &NeighbourStates)    // Call by Algorithm
-    {
-        const std::lock_guard<std::mutex> lock(mutexOtherUAV);
-        std::copy(std::begin(this->OtherUAVstate), std::end(this->OtherUAVstate), NeighbourStates.begin());
-    }
-    void setOtherUAVstate(std::array<RealUAVStateBus, 128> &NeighbourStates)    // Call by DataReactor
-    {
-        const std::lock_guard<std::mutex> lock(mutexOtherUAV);
-        std::move(NeighbourStates.begin(), NeighbourStates.end(), std::begin(this->OtherUAVstate));
-    }
-
     // GCSCMD
     IndividualUAVCmd &getGCSCMD()                                   // Call by Algorithm, block till new data available
     {
@@ -117,6 +108,13 @@ public:
         hasGCSCMD = true;
         lk.unlock();
         cvGCSCMD.notify_one();
+    }
+
+    friend void SimulinkIPC::setSwarmInterface(SwarmControlInterface *swarmInterface);
+
+    void setNbrUAV(RealUAVStateBus &NbrState)                       // Call by DataReactor
+    {
+        slIPC->SetNbrUAVState(NbrState);
     }
 
 private:
@@ -140,14 +138,16 @@ private:
     std::condition_variable cvTaskStatus;
     bool hasTaskStatus{false};
 
-    RealUAVStateBus OtherUAVstate[128]; // 0xC2, OtherUAV -> ThisUAV
-    std::mutex mutexOtherUAV;
-
     IndividualUAVCmd GCSCMD{}; // 0xFC, GroundControl -> MissionControl
     std::mutex mutexGCSCMD;    // Asynchronous
     std::condition_variable cvGCSCMD;
     bool hasGCSCMD{false};
 
+    SimulinkIPC *slIPC;
+    void setIPC(SimulinkIPC *ptrIPC)
+    {
+        slIPC = ptrIPC;
+    }
 };
 
 #endif

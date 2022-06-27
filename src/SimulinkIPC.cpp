@@ -1,6 +1,7 @@
 #include <iostream>
 #include "SimulinkIPC.h"
 #include <errno.h>
+#include "SwarmControlInterface.h"
 
 SimulinkIPC::SimulinkIPC()
     : ptrPosixMQ_Start{new msgQueue("/ptrPosixMQ_Start", O_CREAT | O_WRONLY, 1, sizeof(bool))}
@@ -22,7 +23,20 @@ void SimulinkIPC::runThreads()
     ptrThreadPool.push_back(new std::thread(&SimulinkIPC::sndMissionCmd, this));
     ptrThreadPool.push_back(new std::thread(&SimulinkIPC::rcvMissionCmdFB, this));
     ptrThreadPool.push_back(new std::thread(&SimulinkIPC::rlseAlgStart, this));
-    ptrThreadPool.push_back(new std::thread(&SimulinkIPC::sndNbrUAVState, this));
+}
+
+void SimulinkIPC::SetNbrUAVState(RealUAVStateBus &NbrState)
+{
+    if (!(mq_send(ptrPosixMQ_NbrState->getMQ(), (char *)&NbrState, sizeof(RealUAVStateBus), priority["IO"]) < 0))
+    {
+        std::cout << " UAV" << NbrState.UAV_ID << " " << std::endl;
+    }
+}
+
+void SimulinkIPC::setSwarmInterface(SwarmControlInterface *swarmInterface)
+{
+    swarmInter = swarmInterface;
+    swarmInter->setIPC(this);
 }
 
 void SimulinkIPC::rcvSimulinkOutput()

@@ -1,11 +1,14 @@
-#ifndef MISSION_CIRCLE_H
-#define MISSION_CIRCLE_H
+#ifndef MISSION_CONTROL_SL
+#define MISSION_CONTROL_SL
 
 #include <thread>
 #include <map>
 #include <memory>
-#include "SwarmControlInterface.h"
 #include "msgQueue.hpp"
+#include "swarmBasicData.h"
+#include <vector>
+
+class SwarmControlInterface;
 
 class SimulinkIPC
 {
@@ -14,17 +17,10 @@ public:
     ~SimulinkIPC();
 
     void runThreads(); //启动后台运算线程
-    void sndSimulinkInput();
-    void rcvSimulinkOutput();
-    void rlseAlgStart();
-    void sndMissionCmd();
-    void rcvMissionCmdFB();
-    void sndNbrUAVState();
 
-    void setSwarmInterface(SwarmControlInterface *swarmInterface)
-    {
-        swarmInter = swarmInterface;
-    }
+    void SetNbrUAVState(RealUAVStateBus &);
+
+    void setSwarmInterface(SwarmControlInterface *);
 
 private:
     std::map<std::string, unsigned int> priority{{"IO", 8192}, {"Snd", 16384}, {"Rcv", 0}};
@@ -35,6 +31,12 @@ private:
     std::shared_ptr<msgQueue> ptrPosixMQ_SndCMD;
     std::shared_ptr<msgQueue> ptrPosixMQ_RcvCMD;
     std::shared_ptr<msgQueue> ptrPosixMQ_NbrState;
+
+    void sndSimulinkInput();
+    void rcvSimulinkOutput();
+    void rlseAlgStart();
+    void sndMissionCmd();
+    void rcvMissionCmdFB();
 
     SwarmControlInterface *swarmInter;
 
