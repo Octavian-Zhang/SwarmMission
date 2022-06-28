@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.23)
+
 # add compiler option to use C++11 features
 set (CMAKE_CXX_STANDARD 11)
 
