@@ -17,8 +17,6 @@ public:
     SwarmControlInterface() {}
     ~SwarmControlInterface() {}
 
-    bool StartMission{false};
-
     // TimeCalibrated
     void calibrateTime()                                            // Call by DataReactor
     {

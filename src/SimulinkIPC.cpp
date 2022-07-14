@@ -4,12 +4,12 @@
 #include "SwarmControlInterface.h"
 
 SimulinkIPC::SimulinkIPC()
-    : ptrPosixMQ_Start{new msgQueue("/ptrPosixMQ_Start", O_CREAT | O_WRONLY, 1, sizeof(bool))}
+    : ptrPosixMQ_Start{new msgQueue("/PosixMQ_Start", O_CREAT | O_WRONLY, 1, sizeof(bool))}
     , ptrPosixMQ_ExtU{new msgQueue("/PosixMQ_ExtU", O_CREAT | O_WRONLY, 1, sizeof(ExtU_codegenReal2Mission_T))}
     , ptrPosixMQ_ExtY{new msgQueue("/PosixMQ_ExtY", O_CREAT | O_RDONLY, 1, sizeof(ExtY_codegenReal2Mission_T))}
     , ptrPosixMQ_SndCMD{new msgQueue("/PosixMQ_SndCMD", O_CREAT | O_RDONLY, 1, sizeof(IndividualUAVCmd))}
     , ptrPosixMQ_RcvCMD{new msgQueue("/PosixMQ_RcvCMD", O_CREAT | O_WRONLY, 1, sizeof(IndividualUAVCmd))}
-    , ptrPosixMQ_NbrState{new msgQueue("/ptrPosixMQ_NbrState", O_CREAT | O_WRONLY, 1, sizeof(RealUAVStateBus))}
+    , ptrPosixMQ_NbrState{new msgQueue("/PosixMQ_NbrState", O_CREAT | O_WRONLY, 1, sizeof(RealUAVStateBus))}
 {
 }
 

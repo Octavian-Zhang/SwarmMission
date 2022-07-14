@@ -23,3 +23,18 @@ target_link_libraries (SwarmMission rt Threads::Threads)
 # state that anybody linking to us needs to include the current source dir
 # to find necessary headers, while we don't.
 target_include_directories (SwarmMission INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# find Catch2 package for test automation
+find_package(Catch2 3 REQUIRED)
+
+# add testing framework
+include(CTest)
+include(Catch)
+
+enable_testing()
+# These tests can use the Catch2-provided main
+add_executable(TestIO TestInterface.cxx)
+target_link_libraries(TestIO PRIVATE SwarmMission Catch2::Catch2WithMain)
+
+# include Catch2 test in CTest
+catch_discover_tests(TestIO)
