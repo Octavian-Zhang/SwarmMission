@@ -112,7 +112,10 @@ public:
 
     void setNbrUAV(RealUAVStateBus &NbrState)                       // Call by DataReactor
     {
-        slIPC->SetNbrUAVState(NbrState);
+        if (nullptr != slIPC)
+        {
+            slIPC->SetNbrUAVState(NbrState);
+        }
     }
 
 private:
@@ -141,7 +144,7 @@ private:
     std::condition_variable cvGCSCMD;
     bool hasGCSCMD{false};
 
-    SimulinkIPC *slIPC;
+    SimulinkIPC *slIPC{};
     void setIPC(SimulinkIPC *ptrIPC)
     {
         slIPC = ptrIPC;

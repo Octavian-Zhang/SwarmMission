@@ -42,6 +42,7 @@ struct FCUCMD
     real_T Height_meter;
     real_T RefHdg_deg;
     real_T RefAirSpd_mps;
+    real_T RefGndSpd_mps;
 };
 
 struct TaskStatus

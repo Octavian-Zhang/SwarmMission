@@ -9,9 +9,9 @@ TEST_CASE("Swarm Mission Control Interface", "[SwarmMission]")
     SimulinkIPC myIPC;
     SwarmControlInterface myInterface;
     myIPC.setSwarmInterface(&myInterface);
-    // myIPC.runThreads();
+    myIPC.runThreads();
 
-    // myInterface.calibrateTime();
+    myInterface.calibrateTime();
 
     // FCUCMD myFlightCMD;
     // myFlightCMD = myInterface.getFlightCMD();

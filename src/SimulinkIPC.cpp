@@ -31,6 +31,12 @@ void SimulinkIPC::SetNbrUAVState(RealUAVStateBus &NbrState)
     {
         std::cout << " UAV" << NbrState.UAV_ID << " " << std::endl;
     }
+    else
+    {
+        int err = errno;
+        std::cout << "Neighbor UAV errno " << err << std::endl
+                  << std::flush;
+    }
 }
 
 void SimulinkIPC::setSwarmInterface(SwarmControlInterface *swarmInterface)
@@ -53,6 +59,12 @@ void SimulinkIPC::rcvSimulinkOutput()
             swarmInter->setFlightCMD(ExtY.FlightCMD);
             swarmInter->setTaskStatus(ExtY.MissionFB);
         }
+        else
+        {
+            int err = errno;
+            std::cout << "ExtY errno " << err << std::endl
+                      << std::flush;
+        }
     }
 }
 
@@ -70,6 +82,12 @@ void SimulinkIPC::sndSimulinkInput()
             std::cout << "Sent ExtU"
                       << std::endl;
         }
+        else
+        {
+            int err = errno;
+            std::cout << "ExtU errno " << err << std::endl
+                      << std::flush;
+        }
     }
 }
 
@@ -77,11 +95,17 @@ void SimulinkIPC::rlseAlgStart()
 {
     printf("Wait for time calibration\n");
     swarmInter->waitTillCalibrated();
-    bool startflag{false};
+    bool startflag{true};
     unsigned int startflagprio = 1;
     if (!(mq_send(ptrPosixMQ_Start->getMQ(), (char *)&startflag, sizeof(bool), startflagprio) < 0))
     {
         printf("Time calibrated\n");
+    }
+    else
+    {
+        int err = errno;
+        std::cout << "Start errno " << err << std::endl
+                  << std::flush;
     }
 }
 
@@ -99,6 +123,12 @@ void SimulinkIPC::sndMissionCmd()
         {
             std::cout << "********** Delivered RcvCMD **********" << std::endl;
         }
+        else
+        {
+            int err = errno;
+            std::cout << "Deliver RcvCMD errno " << err << std::endl
+                      << std::flush;
+        }
     }
 }
 
@@ -113,6 +143,12 @@ void SimulinkIPC::rcvMissionCmdFB()
             std::cout << "********** Received SndCMD **********"
                       << std::endl;
             // Parse Command Feedback here
+        }
+        else
+        {
+            int err = errno;
+            std::cout << "Receive SndCMD errno " << err << std::endl
+                      << std::flush;
         }
     }
 }
