@@ -9,7 +9,7 @@ SimulinkIPC::SimulinkIPC()
     , ptrPosixMQ_ExtY{new msgQueue("/PosixMQ_ExtY", O_CREAT | O_RDONLY, 1, sizeof(ExtY_codegenReal2Mission_T))}
     , ptrPosixMQ_SndCMD{new msgQueue("/PosixMQ_SndCMD", O_CREAT | O_RDONLY, 1, sizeof(IndividualUAVCmd))}
     , ptrPosixMQ_RcvCMD{new msgQueue("/PosixMQ_RcvCMD", O_CREAT | O_WRONLY, 1, sizeof(IndividualUAVCmd))}
-    , ptrPosixMQ_NbrState{new msgQueue("/PosixMQ_NbrState", O_CREAT | O_WRONLY, 1, sizeof(RealUAVStateBus))}
+    , ptrPosixMQ_NbrState{new msgQueue("/PosixMQ_NbrState", O_CREAT | O_RDWR | O_NONBLOCK, 10, sizeof(RealUAVStateBus))}
 {
 }
 
@@ -27,6 +27,16 @@ void SimulinkIPC::runThreads()
 
 void SimulinkIPC::SetNbrUAVState(RealUAVStateBus &NbrState)
 {
+    mq_attr attr;
+    if (!mq_getattr(ptrPosixMQ_NbrState->getMQ(), &attr) && attr.mq_curmsgs == attr.mq_maxmsg)
+    {   // Queue is full
+        RealUAVStateBus oldest{};
+        if (mq_receive(ptrPosixMQ_NbrState->getMQ(), (char *)&oldest, sizeof(RealUAVStateBus), &priority["IO"]) >= 0)
+        {
+            std::cout << "Remove oldest neighbour state " << oldest.UAV_ID << std::endl;
+        }
+    }
+    
     if (!(mq_send(ptrPosixMQ_NbrState->getMQ(), (char *)&NbrState, sizeof(RealUAVStateBus), priority["IO"]) < 0))
     {
         std::cout << " UAV" << NbrState.UAV_ID << " " << std::endl;

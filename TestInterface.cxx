@@ -23,7 +23,7 @@ TEST_CASE("Swarm Mission Control Interface", "[SwarmMission]")
     while (true)
     {
         /* code */
-        if (myNbrState.UAV_ID == 6)
+        if (myNbrState.UAV_ID == 100)
         {
             /* code */
             myNbrState.UAV_ID = 1;
