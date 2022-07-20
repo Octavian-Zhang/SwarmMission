@@ -9,7 +9,7 @@ SimulinkIPC::SimulinkIPC()
     , ptrPosixMQ_ExtY{new msgQueue("/PosixMQ_ExtY", O_CREAT | O_RDONLY, 1, sizeof(ExtY_codegenReal2Mission_T))}
     , ptrPosixMQ_SndCMD{new msgQueue("/PosixMQ_SndCMD", O_CREAT | O_RDONLY, 1, sizeof(IndividualUAVCmd))}
     , ptrPosixMQ_RcvCMD{new msgQueue("/PosixMQ_RcvCMD", O_CREAT | O_WRONLY, 1, sizeof(IndividualUAVCmd))}
-    , ptrPosixMQ_NbrState{new msgQueue("/PosixMQ_NbrState", O_CREAT | O_RDWR | O_NONBLOCK, 10, sizeof(RealUAVStateBus))}
+    , ptrPosixMQ_NbrState{new msgQueue("/PosixMQ_NbrState", O_CREAT | O_RDWR, 10, sizeof(RealUAVStateBus))}
 {
 }
 
