@@ -4,51 +4,37 @@
 #include <thread>
 #include <map>
 #include <memory>
-#include "msgQueue.hpp"
-#include "swarmBasicData.h"
 #include <vector>
-
-class SwarmControlInterface;
+#include "msgQueue.hpp"
+#include "DatalinkInterface.h"
 
 class SimulinkIPC
 {
 public:
     SimulinkIPC();
-    ~SimulinkIPC();
 
-    void runThreads(); //启动后台运算线程
-
-    void SetNbrUAVState(RealUAVStateBus &);
-
-    void setSwarmInterface(SwarmControlInterface *);
+    void rlseAlgStart();
+    void rcvMissionCmdFB(IndividualUAVCmd &);
+    void rcvFlightCMD(FCUCMD &);
+    void sndFlightMode(const uint8_T);
+    void SndFlightState(const RealUAVStateBus&);
+    void sndMissionCmd(const IndividualUAVCmd&);
+    void rcvTaskStatus(TaskStatus&);
+    void SetNbrUAVState(const RealUAVStateBus&);
+    void sndVecSpd(const VectorSpeed&);
 
 private:
-    std::map<std::string, unsigned int> priority{{"IO", 8192}, {"Snd", 16384}, {"Rcv", 0}};
+    std::map<std::string, unsigned int> priority{{"IO", 8192}, {"High", 16384}, {"Low", 0}};
 
-    std::shared_ptr<msgQueue> ptrPosixMQ_Start;
-    std::shared_ptr<msgQueue> ptrPosixMQ_ExtU;
-    std::shared_ptr<msgQueue> ptrPosixMQ_ExtY;
-    std::shared_ptr<msgQueue> ptrPosixMQ_SndCMD;
-    std::shared_ptr<msgQueue> ptrPosixMQ_RcvCMD;
-    std::shared_ptr<msgQueue> ptrPosixMQ_NbrState;
-
-    void sndSimulinkInput();
-    void rcvSimulinkOutput();
-    void rlseAlgStart();
-    void sndMissionCmd();
-    void rcvMissionCmdFB();
-
-    SwarmControlInterface *swarmInter;
-
-    std::vector<std::thread *> ptrThreadPool;
-
-    void batchJoin()
-    {
-        for (auto ptrThread : ptrThreadPool)
-        {
-            ptrThread->join();
-        }
-    }
+    std::shared_ptr<msgQueue> TriggerStart;             // Arg0
+    std::shared_ptr<msgQueue> RcvIndividualUAVCmd;      // Arg1
+    std::shared_ptr<msgQueue> RcvFCUCMD;                // Arg2
+    std::shared_ptr<msgQueue> SndFlightMode;            // Arg4
+    std::shared_ptr<msgQueue> SndRealUAVStateBus;       // Arg5
+    std::shared_ptr<msgQueue> SndIndividualUAVCmd;      // Arg6
+    std::shared_ptr<msgQueue> RcvTaskStatus;            // Arg7
+    std::shared_ptr<msgQueue> SndNbrState;              // Arg8
+    std::shared_ptr<msgQueue> SndVectorSpeed;           // Arg9
 };
 
 #endif

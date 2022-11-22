@@ -1,39 +1,43 @@
 // Catch2 Test
-#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch.hpp>
 #include <unistd.h>
+#include <iostream>
+#include <future>
 
-#include "SwarmControlInterface.h"
+#include "SimulinkIPC.h"
 
 TEST_CASE("Swarm Mission Control Interface", "[SwarmMission]")
 {
     SimulinkIPC myIPC;
-    SwarmControlInterface myInterface;
-    myIPC.setSwarmInterface(&myInterface);
-    myIPC.runThreads();
 
-    myInterface.calibrateTime();
+    // myIPC.rlseAlgStart();
 
-    // FCUCMD myFlightCMD;
-    // myFlightCMD = myInterface.getFlightCMD();
-    // REQUIRE(myFlightCMD.Height_meter >= 80);
-    // REQUIRE(myFlightCMD.RefAirSpd_mps >= 29);
-
-    RealUAVStateBus myNbrState{};
-    myNbrState.UAV_ID = 1;
-    while (true)
+    auto _ = std::async(std::launch::async, [&]()
+                        {while (true)
     {
-        /* code */
-        if (myNbrState.UAV_ID == 100)
-        {
-            /* code */
-            myNbrState.UAV_ID = 1;
-        }
-        
-        usleep(5e4);
-        myInterface.setNbrUAV(myNbrState);
-        myNbrState.UAV_ID++;
-    }
-    
-    myInterface.setNbrUAV(myNbrState);
-    myInterface.setNbrUAV(myNbrState);
+        FCUCMD FlightCMD;
+        myIPC.rcvFlightCMD(FlightCMD);
+
+        // IndividualUAVCmd CmdFB;
+        // myIPC.rcvMissionCmdFB(CmdFB);
+
+        TaskStatus TaskState{};
+        myIPC.rcvTaskStatus(TaskState);
+
+        RealUAVStateBus FlightState{};
+        myIPC.SndFlightState(FlightState);
+
+        VectorSpeed VecSpd{};
+        myIPC.sndVecSpd(VecSpd);
+
+        uint8_T FlightMode{};
+        myIPC.sndFlightMode(FlightMode);
+
+        RealUAVStateBus NbrState{};
+        myIPC.SetNbrUAVState(NbrState);
+    } });
+
+    IndividualUAVCmd myCMD{};
+    myIPC.sndMissionCmd(myCMD);
+    myIPC.rcvMissionCmdFB(myCMD);
 }

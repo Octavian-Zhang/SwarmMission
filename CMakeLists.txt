@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.20)
 project(SwarmMission)
 
 # add compiler option to use C++11 features
@@ -25,7 +25,7 @@ target_link_libraries (SwarmMission rt Threads::Threads)
 target_include_directories (SwarmMission INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # find Catch2 package for test automation
-find_package(Catch2 3 REQUIRED)
+find_package(Catch2 REQUIRED)
 
 IF(Catch2_FOUND)
     # add testing framework

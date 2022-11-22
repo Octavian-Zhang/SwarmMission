@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'codegenReal2Mission'.
 //
-// Model version                  : 4.219
-// Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
-// C/C++ source code generated on : Thu Jun  2 02:00:58 2022
+// Model version                  : 5.25
+// Simulink Coder version         : 9.8 (R2022b) 13-May-2022
+// C/C++ source code generated on : Mon Nov 21 19:28:33 2022
 //
 
 #ifndef RTW_HEADER_DatalinkInterface_h_
@@ -43,6 +43,37 @@ struct Time
     int32_T millisecond;
 };
 
+struct RealUAVStateBus
+{
+    int32_T UAV_ID;
+    real_T Latitude_deg;
+    real_T Longitude_deg;
+    real_T Height_meter;
+    real_T Altitude_meter;
+    real_T AirSpeed_mps;
+    real_T GndSpd_mps;
+    real_T HeadingAngle_deg;
+    real_T FlightPathAngle_deg;
+    real_T RollAngle_deg;
+};
+
+struct VectorSpeed
+{
+    real_T eastSpeed;
+    real_T northSpeed;
+    real_T skySpeed;
+};
+
+struct FCUCMD
+{
+    real_T RefLatitude_deg;
+    real_T RefLongitude_deg;
+    real_T RefHeight_meter;
+    real_T RefHdg_deg;
+    real_T RefAirSpd_mps;
+    real_T RefGndSpd_mps;
+};
+
 struct IndividualUAVCmd
 {
     int32_T SequenceID;
@@ -53,6 +84,17 @@ struct IndividualUAVCmd
     int32_T numUAV;
     int32_T FormationPos;
     Time StartTime;
+};
+
+struct TaskStatus
+{
+    uint8_T EngagedFlag;
+    int32_T FlightStatus;
+    int32_T ImmedStatus;
+    int32_T SequenceID;
+    MissionModes MissionMode;
+    int32_T numUAV;
+    int32_T FormationPos;
 };
 
 #endif                                 // RTW_HEADER_DatalinkInterface_h_

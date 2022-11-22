@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'codegenReal2Mission'.
 //
-// Model version                  : 4.332
-// Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
-// C/C++ source code generated on : Thu Jul 14 15:07:38 2022
+// Model version                  : 5.25
+// Simulink Coder version         : 9.8 (R2022b) 13-May-2022
+// C/C++ source code generated on : Mon Nov 21 19:28:33 2022
 //
 
 #ifndef RTW_HEADER_MissionModes_h_
@@ -21,7 +21,6 @@ enum class MissionModes
     DetailedInsp = 128,
     AvoidDanger = 129,
     FlightMissionRH = 130,
-    SqCalibr = 132,
     pAttack = 133,
     CircDispNav = 11,
     CustomFrmnNav = 22,
